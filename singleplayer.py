@@ -1,6 +1,5 @@
 from connect4 import Game
 from ai import MiniMax
-import random
 
 if __name__ == '__main__':
     game = Game(ai_bool=True)
