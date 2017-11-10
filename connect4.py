@@ -8,9 +8,8 @@ import itertools
 
 class Game():
     def __init__(self, size=(6,7), ai_bool=False):
-        self.tokens = ['_']
+        self.tokens = [u'\u26AA', u'\U0001F534', u'\U0001F535']
         self.player_names = []
-        self.player_colors = []
         self.size = size
         self.board = [[self.tokens[0] for i in range(self.size[1])] for j in range(self.size[0])]
         self.curr_player = random.choice([1,2])
@@ -21,23 +20,15 @@ class Game():
 
     def setup(self):
         self.__askUser("Player 1 name: ", name_flag=True)
-        self.__askUser("Player 1 token: ", token_flag=True)
-        self.__askUser("Player 1 color ('R', 'B', 'G', 'Y', 'P'): ", color_flag=True)
         if self.ai:
             self.player_names = self.player_names + ['AI_BOT']
-            self.tokens = self.tokens + ['*']
-            random_color = random.choice(list(set(['R', 'B', 'Y', 'P'])-set(self.player_colors)))
-            self.player_colors = self.player_colors + [random_color]
-            print "Player 2 (%s) will have token %s and color %s" % \
-                  (self.player_names[1], self.tokens[2], self.player_colors[1])
         else:
             self.__askUser("Player 2 name: ", name_flag=True)
-            self.__askUser("Player 2 token: ", token_flag=True)
-            self.__askUser("Player 2 color ('R', 'B', 'G', 'Y', 'P'): ", color_flag=True)
-        launch_text = "\nPlayer %i was randomly selected to begin. Press enter to play!" % self.curr_player
+        launch_text = "\n%s was randomly selected to play first. Press enter to play!" % \
+                      self.player_names[self.curr_player-1]
         self.__askUser(launch_text)
 
-    def __askUser(self, text, name_flag=False, token_flag=False, color_flag=False, num_flag=False):
+    def __askUser(self, text, name_flag=False, num_flag=False):
         ''' ask user for input '''
         while True: # get player 2 token
             try:
@@ -46,15 +37,9 @@ class Game():
                 if name_flag and len(user_in)>0:
                     self.player_names = self.player_names + [user_in]
                     return
-                elif token_flag and len(user_in)==1:
-                    self.tokens = self.tokens + [user_in]
-                    return
-                elif color_flag and (user_in in ['R', 'B', 'G', 'Y', 'P']):
-                    self.player_colors = self.player_colors + [user_in]
-                    return
                 elif num_flag and 1<=int(user_in)<=self.size[1] and self.board[0][int(user_in)-1]==self.tokens[0]:
                     return int(user_in)-1
-                elif all([not a for a in [name_flag, token_flag, color_flag, num_flag]]):
+                elif not name_flag and not num_flag:
                     return
                 else:
                     print "Invalid entry. Please try again."
@@ -67,35 +52,16 @@ class Game():
         col = self.__askUser('Which column? ', num_flag=True)
         return col
 
-    def __colorPrint(self, player_num, text):
-        ''' prints in players color '''
-        if self.player_colors[player_num] == 'R':
-            print '\033[91m' + text + '\033[0m',
-        elif self.player_colors[player_num] == 'B':
-            print '\033[94m' + text + '\033[0m',
-        elif self.player_colors[player_num] == 'G':
-            print '\033[92m' + text + '\033[0m',
-        elif self.player_colors[player_num] == 'Y':
-            print '\033[93m' + text + '\033[0m',
-        elif self.player_colors[player_num] == 'P':
-            print '\033[95m' + text + '\033[0m',
-
     def displayBoard(self):
         ''' print the board to the terminal '''
         print
+        start_digit = u'\u2460'
         for i in range(self.size[1]):
-            print i+1,
-            print " ",
+            print unichr(ord(start_digit)+i) + ' ',
         print
         for row in self.board:
             for elt in row:
-                if elt[0] == self.tokens[1]:
-                    self.__colorPrint(0, elt[0])
-                elif elt[0] == self.tokens[2]:
-                    self.__colorPrint(1, elt[0])
-                else:
-                    print elt[0],
-                print " ",
+                print elt,
             print
         print
 
@@ -153,10 +119,9 @@ class Game():
             3 : tie, all cells have been filled '''
         if verdict == 1 or verdict == 2:
             print '\n\n\n\n\n'
-            winning_statement = '!!' + self.player_names[verdict-1].upper() + ' WINS!!'
-            self.__colorPrint(verdict-1, winning_statement)
+            print '!!!!! ' + self.player_names[verdict-1].upper() + ' WINS !!!!!'
             print '\n\n\n\n\n'
         elif verdict == 3:
             print '\n\n\n\n\n'
-            print 'TIED GAME - ALL CELLS ARE FULL!'
+            print 'CAT\'S GAME - ALL CELLS ARE FULL!'
             print '\n\n\n\n\n'

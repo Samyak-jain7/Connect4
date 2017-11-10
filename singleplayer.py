@@ -9,7 +9,7 @@ min_depth : minimum depth ai will search regardless of time
 discount : exponential decay penalty for rewards over time
 '''
 reward_connections = True
-min_think_time = 5
+min_think_time = 3
 min_depth = 3
 discount = .1
 
