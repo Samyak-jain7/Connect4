@@ -150,4 +150,4 @@ class MiniMax():
               and depth*2<=self.size[0]*self.size[1]-moves_played:
             depth += 1
             v, a = self.__minimaxCalc(board, moves_played, depth, depth, None, None, -np.inf, np.inf, self.index)
-        return v, a, depth
+        return v, a, depth, time.time()-t_0

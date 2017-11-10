@@ -9,7 +9,7 @@ min_depth : minimum depth ai will search regardless of time
 discount : exponential decay penalty for rewards over time
 '''
 reward_connections = True
-min_think_time = 3
+min_think_time = 5
 min_depth = 3
 discount = .1
 
@@ -30,9 +30,9 @@ if __name__ == '__main__':
             verdict = game.move()
         else:
             print "%s is thinking..." % game.player_names[1]
-            v, a, d = ai_agent.pickColumn(board = game.board, \
-                                          moves_played = game.moves_played)
-            print "...%i moves ahead" % (2*d)
+            v, a, d, t = ai_agent.pickColumn(board = game.board, \
+                                             moves_played = game.moves_played)
+            print "...%i moves ahead in %i secs" % (2*d, int(t))
             verdict = game.move(ai_in=a)
     game.displayBoard()
     game.endGame(verdict)
